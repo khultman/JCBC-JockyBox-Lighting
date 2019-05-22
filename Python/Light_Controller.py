@@ -18,6 +18,7 @@ class Lights(object):
         self._mode = "Enabled"
 
     def switch_mode(self):
+        self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         cmode = self._mode
         if cmode == "Enabled":
             self._mode = "Disabled"
