@@ -16,7 +16,7 @@ class LightService(object):
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("_args passed in", extra=self._logging_variables)
         self._log.debug(vars(self._args), extra=self._logging_variables)
-        self.lights = Lights( self._args.Pixel_Count, self._args.Pixel_Pin, self._args.Switch_Pin)
+        self.lights = Lights( self._args.pixel_count, self._args.pixel_pin, self._args.switch_pin)
 
     @staticmethod
     def get_cli_args(args=None):
@@ -33,7 +33,7 @@ class LightService(object):
                                 help="GPIO of Switch Pin, default 2",
                                 type=int,
                                 action="store",
-                                dest="DoorPin",
+                                dest="switch_pin",
                                 default=2)
         # Pixel Configuration
         basic_pix = parser.add_argument_group('Neopixel Configuration')
@@ -41,13 +41,13 @@ class LightService(object):
                                help="GPIO of NeoPixel Controller",
                                type=int,
                                action="store",
-                               dest="PixelPin",
+                               dest="pixel_pin",
                                default="12")
         basic_pix.add_argument("--pixels",
                                help="The number of pixels connected to the strip",
                                type=int,
                                action="store",
-                               dest="PixelPixels",
+                               dest="pixel_count",
                                default=30)
         basic_pix.add_argument("--pixelchannel",
                                help="PWM Channel of NeoPixel",
