@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import sys
 from Light_Controller import Lights
 from logger import MLOGGER
 
