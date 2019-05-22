@@ -15,10 +15,21 @@ class Lights(object):
         self._pixel = Pixel(self._pixel_count, self._pixel_pin)
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
-        self._mode = "Default"
+        self._mode = "Enabled"
 
     def switch_mode(self):
-        switch_mode()
+        cmode = self._mode
+        if cmode == "Enabled":
+            self._mode = "Disabled"
+        else:
+            self._mode = "Enabled"
+
+    def lightshow(self):
+        while True:
+            if self._mode == "Enabled":
+                self._pixel.rainbow_chase()
+            else:
+                self.log.debug("Lightshow disabled")
 
     def stop(self):
         self._pixel.clear()
