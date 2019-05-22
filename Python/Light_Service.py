@@ -35,6 +35,7 @@ class LightService(object):
                                 action="store",
                                 dest="DoorPin",
                                 default=2)
+        # Pixel Configuration
         basic_pix = parser.add_argument_group('Neopixel Configuration')
         basic_pix.add_argument("-pp", "--pixelpin",
                                help="GPIO of NeoPixel Controller",
@@ -55,6 +56,25 @@ class LightService(object):
                                action="store",
                                dest="pixel_channel",
                                default=0)
+        # Logging Elements
+        log = parser.add_argument_group('Logging')
+        log.add_argument('-lv', '--loglevel',
+                         type=str,
+                         help='Log Level {INFO,DEBUG,ERROR} Default = INFO',
+                         choices={'INFO', 'DEBUG', 'ERROR'},
+                         dest='loglevel',
+                         default='INFO')
+        log.add_argument('-lt', '--logtype',
+                         type=str,
+                         help='Log to  {CONSOLE,FILE,BOTH,NONE} Default = CONSOLE',
+                         choices={'CONSOLE', 'FILE', 'BOTH', 'NONE'},
+                         dest='logtype',
+                         default='CONSOLE')
+        log.add_argument('-lf', '--logfile',
+                         type=str,
+                         help='Log filename Default = Humidor.log',
+                         dest='logfile',
+                         default='Humidor.log')
         results = parser.parse_args(args)
         return results
 
