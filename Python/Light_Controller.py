@@ -19,45 +19,83 @@ class Lights(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
-        self._mode = "Enabled"
+        self._mode = "Initial"
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
-        cmode = self._mode
-        if cmode == "Enabled":
-            self._log.warn("Disabling Lightshow")
+        c_mode = self._mode
+        if c_mode == "Initial":
+            self._log.warn("Initial State", extra=self._logging_variables)
+            self._mode = "Lightshow"
+            self.execute_mode()
+        elif c_mode == "Lightshow" and channel != "Automatic":
+            self._log.warn("Transitioning from Lightshow to solid color", extra=self._logging_variables)
+            self._mode = "Solid"
+            self.execute_mode()
+        elif c_mode == "Solid" and channel != "Automatic":
+            self._log.warn("Transitioning from Solid color to disabled", extra=self._logging_variables)
             self._mode = "Disabled"
-            self._pixel.clear()
-        else:
-            self._log.warn("Enabling Lightshow")
-            self._mode = "Enabled"
-            self.lightshow()
+            self.execute_mode()
+        elif c_mode == "Disabled" and channel != "Automatic":
+            self._log.warn("Enabling Lightshow", extra=self._logging_variables)
+            self._mode = "Lightshow"
+            self.execute_mode()
+        elif channel == "Automatic":
+            self._log.warn("Automatic bump, continuing current mode", extra=self._logging_variables)
+            self.execute_mode()
 
-    def lightshow(self):
+    def execute_mode(self):
+        self._log.warn("Executing mode {0}".format(self._mode), extra=self._logging_variables)
+        if self._mode == "Lightshow":
+            self.light_show()
+        elif self._mode == "Solid"
+            self.solid_color_selector()
+        elif self._mode == "Disabled":
+            self.stop()
+
+    def light_show(self):
         while True:
-            if self._mode == "Enabled":
+            if self._mode == "Lightshow":
                 self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_chase()
             else:
                 self._log.debug("Lightshow disabled")
-                self._pixel.clear()
+                self.stop()
             if self._mode == "Enabled":
                 self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_cycle()
             else:
                 self._log.debug("Lightshow disabled")
-                self._pixel.clear()
+                self.stop()
             if self._mode == "Enabled":
                 self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.twinkle(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             else:
                 self._log.debug("Lightshow disabled")
-                self._pixel.clear()
+                self.stop()
             if self._mode == "Enabled":
                 self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             else:
                 self._log.debug("Lightshow disabled")
-                self._pixel.clear()
+                self.stop()
+
+    def solid_color_selector(self):
+        choice = random.randint(0, 3)
+        if choice == 0:
+            while True:
+                self._pixel.white_wipe()
+        elif choice == 1:
+            while True:
+                self._pixel.red_wipe()
+        elif choice == 2:
+            while True:
+                self._pixel.green_wipe()
+        elif choice == 3:
+            while True:
+                self._pixel.blue_wipe()
+        else:
+            while True:
+                self._pixel.white_wipe()
 
     def stop(self):
         self._pixel.clear()

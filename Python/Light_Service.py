@@ -23,11 +23,11 @@ class LightService(object):
         parser = argparse.ArgumentParser(description='Run the Light Controller Service')
         basic_cfg = parser.add_argument_group('JockyBox Configuration')
         basic_cfg.add_argument("-cy", "--cycle",
-                               help="Time in seconds between each loop cycle, defaults to 600",
+                               help="Time in seconds to rest between each loop cycle, defaults to 1",
                                type=int,
                                action="store",
                                dest="cycle",
-                               default=600)
+                               default=1)
         basic_gpio = parser.add_argument_group("GPIO Configuration")
         basic_gpio.add_argument("-sp", "--switchpin",
                                 help="GPIO of Switch Pin, default 2",
@@ -82,7 +82,8 @@ class LightService(object):
         try:
             self._log.debug("Entering main loop", extra=self._logging_variables)
             while True:
-                self.lights.lightshow()
+                self.lights.switch_mode("Automatic")
+                #self.lights.light_show()
                 time.sleep(self._args.cycle)
         except KeyboardInterrupt:
             self.lights.stop()
