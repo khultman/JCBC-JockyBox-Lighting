@@ -25,9 +25,11 @@ class Lights(object):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         cmode = self._mode
         if cmode == "Enabled":
+            self._log.warn("Disabling Lightshow")
             self._mode = "Disabled"
             self._pixel.clear()
         else:
+            self._log.warn("Enabling Lightshow")
             self._mode = "Enabled"
             self.lightshow()
 
