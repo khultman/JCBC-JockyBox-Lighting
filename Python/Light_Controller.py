@@ -1,6 +1,7 @@
 
 import logging
 import RPi.GPIO as GPIO
+from neopixel import Color
 from Pixel import Pixel
 
 
@@ -28,9 +29,16 @@ class Lights(object):
     def lightshow(self):
         while True:
             if self._mode == "Enabled":
+                self._pixel.color_wipe(Color(range(255), range(255), range(255)))
                 self._pixel.rainbow_chase()
+                self._pixel.side_wipe(Color(range(255), range(255), range(255)))
+                self._pixel.rainbow_cycle()
+                self._pixel.color_wipe(Color(range(255), range(255), range(255)))
+                self._pixel.twinkle(Color(range(255), range(255), range(255)))
+                self._pixel.side_wipe(Color(range(255), range(255), range(255)))
             else:
                 self.log.debug("Lightshow disabled")
+                self._pixel.clear()
 
     def stop(self):
         self._pixel.clear()
