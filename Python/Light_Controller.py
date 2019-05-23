@@ -48,7 +48,7 @@ class Lights(object):
         self._log.warn("Executing mode {0}".format(self._mode), extra=self._logging_variables)
         if self._mode == "Lightshow":
             self.light_show()
-        elif self._mode == "Solid"
+        elif self._mode == "Solid":
             self.solid_color_selector()
         elif self._mode == "Disabled":
             self.stop()
