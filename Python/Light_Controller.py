@@ -22,13 +22,14 @@ class Lights(object):
         self._mode = "Enabled"
 
     def switch_mode(self, channel):
-        #self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
+        self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         cmode = self._mode
         if cmode == "Enabled":
             self._mode = "Disabled"
             self._pixel.clear()
         else:
             self._mode = "Enabled"
+            self.lightshow()
 
     def lightshow(self):
         while True:
@@ -36,24 +37,24 @@ class Lights(object):
                 self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_chase()
             else:
-                self.log.debug("Lightshow disabled")
+                self._log.debug("Lightshow disabled")
                 self._pixel.clear()
             if self._mode == "Enabled":
                 self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_cycle()
             else:
-                self.log.debug("Lightshow disabled")
+                self._log.debug("Lightshow disabled")
                 self._pixel.clear()
             if self._mode == "Enabled":
                 self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.twinkle(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             else:
-                self.log.debug("Lightshow disabled")
+                self._log.debug("Lightshow disabled")
                 self._pixel.clear()
             if self._mode == "Enabled":
                 self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             else:
-                self.log.debug("Lightshow disabled")
+                self._log.debug("Lightshow disabled")
                 self._pixel.clear()
 
     def stop(self):
