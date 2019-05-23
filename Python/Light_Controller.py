@@ -1,5 +1,6 @@
 
 import logging
+import math
 import RPi.GPIO as GPIO
 from neopixel import Color
 from Pixel import Pixel
@@ -14,11 +15,12 @@ class Lights(object):
         self._pixel_pin = pixel_pin
         self._switch_pin = switch_pin
         self._pixel = Pixel(self._pixel_count, self._pixel_pin)
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
         self._mode = "Enabled"
 
-    def switch_mode(self):
+    def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         cmode = self._mode
         if cmode == "Enabled":
@@ -29,13 +31,25 @@ class Lights(object):
     def lightshow(self):
         while True:
             if self._mode == "Enabled":
-                self._pixel.color_wipe(Color(range(255), range(255), range(255)))
+                self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_chase()
-                self._pixel.side_wipe(Color(range(255), range(255), range(255)))
+            else:
+                self.log.debug("Lightshow disabled")
+                self._pixel.clear()
+            if self._mode == "Enabled":
+                self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
                 self._pixel.rainbow_cycle()
-                self._pixel.color_wipe(Color(range(255), range(255), range(255)))
-                self._pixel.twinkle(Color(range(255), range(255), range(255)))
-                self._pixel.side_wipe(Color(range(255), range(255), range(255)))
+            else:
+                self.log.debug("Lightshow disabled")
+                self._pixel.clear()
+            if self._mode == "Enabled":
+                self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
+                self._pixel.twinkle(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
+            else:
+                self.log.debug("Lightshow disabled")
+                self._pixel.clear()
+            if self._mode == "Enabled":
+                self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             else:
                 self.log.debug("Lightshow disabled")
                 self._pixel.clear()
