@@ -23,8 +23,8 @@ class Lights(object):
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
-        GPIO.remove_event_detect(self._switch_pin)
-        GPIO.add_event_detect(self._switch_pin, GPIO.FALLING, callback=self.switch_mode, bouncetime=200)
+        #GPIO.remove_event_detect(self._switch_pin)
+        #GPIO.add_event_detect(self._switch_pin, GPIO.FALLING, callback=self.switch_mode, bouncetime=200)
         c_mode = self._mode
         if c_mode == "Initial":
             self._log.warn("Initial State", extra=self._logging_variables)
