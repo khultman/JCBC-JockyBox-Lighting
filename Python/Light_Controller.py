@@ -23,8 +23,6 @@ class Lights(object):
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
-        #GPIO.remove_event_detect(self._switch_pin)
-        #GPIO.add_event_detect(self._switch_pin, GPIO.FALLING, callback=self.switch_mode, bouncetime=200)
         c_mode = self._mode
         if c_mode == "Initial":
             self._log.warn("Initial State", extra=self._logging_variables)
@@ -48,7 +46,7 @@ class Lights(object):
             self.execute_mode()
         elif c_mode == "Disabled" and channel != "Automatic":
             self._log.warn("Enabling Lightshow", extra=self._logging_variables)
-            self._mode = "Lightshow"
+            self._mode = "Chase"
             self.execute_mode()
         elif channel == "Automatic":
             self._log.warn("Automatic bump, continuing current mode", extra=self._logging_variables)
