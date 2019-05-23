@@ -102,6 +102,23 @@ class Pixel(object):
                 for i in range(0, self._strip.numPixels(), 3):
                     self._strip.setPixelColor(i+q, 0)
 
+    def solid_display(self, color):
+        for j in range(self._led_count-1):
+            self._strip.setPixelColor(j, color)
+        self._strip.show()
+
+    def solid_white(self):
+        self.solid_display(Color(127, 127, 127))
+
+    def solid_red(self):
+        self.solid_display(Color(255, 0, 0))
+
+    def solid_green(self):
+        self.solid_display(Color(0, 0, 255))
+
+    def solid_blue(self):
+        self.solid_display(Color(0, 255, 0))
+
     @staticmethod
     def wheel(pos):
         # Generate rainbow colors across 0-255 positions.
@@ -130,7 +147,7 @@ class Pixel(object):
             self._strip.show()
             time.sleep(wait_ms/1000.0)
 
-    def twinkle(self, color, wait_ms=75, duration=10):
+    def twinkle(self, color, wait_ms=75, duration=1):
         nsteps = 10
         self.white_wipe()
         leds = {}

@@ -23,13 +23,22 @@ class Lights(object):
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
+        GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
         c_mode = self._mode
         if c_mode == "Initial":
             self._log.warn("Initial State", extra=self._logging_variables)
-            self._mode = "Lightshow"
+            self._mode = "Chase"
             self.execute_mode()
-        elif c_mode == "Lightshow" and channel != "Automatic":
-            self._log.warn("Transitioning from Lightshow to solid color", extra=self._logging_variables)
+        elif c_mode == "Chase" and channel != "Automatic":
+            self._log.warn("Transitioning from Chase to Rainbow", extra=self._logging_variables)
+            self._mode = "Rainbow"
+            self.execute_mode()
+        elif c_mode == "Rainbow" and channel != "Automatic":
+            self._log.warn("Transitioning from Rainbow to Twinkle", extra=self._logging_variables)
+            self._mode = "Twinkle"
+            self.execute_mode()
+        elif c_mode == "Twinkle" and channel != "Automatic":
+            self._log.warn("Transitioning from Twinkle to Solid", extra=self._logging_variables)
             self._mode = "Solid"
             self.execute_mode()
         elif c_mode == "Solid" and channel != "Automatic":
@@ -46,55 +55,64 @@ class Lights(object):
 
     def execute_mode(self):
         self._log.warn("Executing mode {0}".format(self._mode), extra=self._logging_variables)
-        if self._mode == "Lightshow":
-            self.light_show()
+        if self._mode == "Chase":
+            self.chase_selector()
+        elif self._mode == "Rainbow":
+            self.rainbow_selector()
+        elif self._mode == "Twinkle":
+            self.twinkle_selector()
         elif self._mode == "Solid":
             self.solid_color_selector()
         elif self._mode == "Disabled":
             self.stop()
 
-    def light_show(self):
+    def chase_selector(self):
         while True:
-            if self._mode == "Lightshow":
-                self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-                self._pixel.rainbow_chase()
-            else:
-                self._log.debug("Lightshow disabled")
-                self.stop()
-            if self._mode == "Enabled":
-                self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-                self._pixel.rainbow_cycle()
-            else:
-                self._log.debug("Lightshow disabled")
-                self.stop()
-            if self._mode == "Enabled":
-                self._pixel.color_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-                self._pixel.twinkle(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-            else:
-                self._log.debug("Lightshow disabled")
-                self.stop()
-            if self._mode == "Enabled":
-                self._pixel.side_wipe(Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-            else:
-                self._log.debug("Lightshow disabled")
-                self.stop()
+            if self._mode != "Chase":
+                break
+            self._pixel.color_wipe(Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+            self._pixel.rainbow_chase()
+
+    def rainbow_selector(self):
+        while True:
+            if self._mode != "Rainbow":
+                break
+            self._pixel.side_wipe(Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+            self._pixel.rainbow_cycle(75, 1)
+
+    def twinkle_selector(self):
+        while True:
+            if self._mode != "Twinkle":
+                break
+            self._pixel.color_wipe(Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+            self._pixel.twinkle(Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
     def solid_color_selector(self):
         choice = random.randint(0, 3)
         if choice == 0:
             while True:
-                self._pixel.white_wipe()
+                if self._mode != "Solid":
+                    break
+                self._pixel.solid_white()
         elif choice == 1:
             while True:
-                self._pixel.red_wipe()
+                if self._mode != "Solid":
+                    break
+                self._pixel.solid_red()
         elif choice == 2:
             while True:
-                self._pixel.green_wipe()
+                if self._mode != "Solid":
+                    break
+                self._pixel.solid_green()
         elif choice == 3:
             while True:
-                self._pixel.blue_wipe()
+                if self._mode != "Solid":
+                    break
+                self._pixel.solid_green()
         else:
             while True:
+                if self._mode != "Solid":
+                    break
                 self._pixel.white_wipe()
 
     def stop(self):
