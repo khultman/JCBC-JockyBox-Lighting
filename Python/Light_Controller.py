@@ -17,14 +17,14 @@ class Lights(object):
         self._switch_pin = switch_pin
         self._pixel = Pixel(self._pixel_count, self._pixel_pin)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
+        GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(self._switch_pin, GPIO.FALLING, callback=self.switch_mode, bouncetime=200)
         self._mode = "Initial"
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         GPIO.remove_event_detect(self._switch_pin)
-        GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=300)
+        GPIO.add_event_detect(self._switch_pin, GPIO.FALLING, callback=self.switch_mode, bouncetime=200)
         c_mode = self._mode
         if c_mode == "Initial":
             self._log.warn("Initial State", extra=self._logging_variables)
