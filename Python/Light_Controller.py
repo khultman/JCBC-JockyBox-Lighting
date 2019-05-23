@@ -1,6 +1,7 @@
 
 import logging
 import math
+import random
 import RPi.GPIO as GPIO
 from neopixel import Color
 from Pixel import Pixel
@@ -21,10 +22,11 @@ class Lights(object):
         self._mode = "Enabled"
 
     def switch_mode(self, channel):
-        self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
+        #self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         cmode = self._mode
         if cmode == "Enabled":
             self._mode = "Disabled"
+            self._pixel.clear()
         else:
             self._mode = "Enabled"
 

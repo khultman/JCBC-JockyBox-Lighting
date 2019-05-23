@@ -1,6 +1,7 @@
 import math
-from neopixel import *
+import random
 import time
+from neopixel import *
 
 
 # LED strip configuration:
@@ -131,7 +132,7 @@ class Pixel(object):
 
     def twinkle(self, color, wait_ms=75, duration=10):
         nsteps = 10
-        self._strip.fill((0, 0, 0))
+        self.white_wipe()
         leds = {}
         for i in range(0, self._strip.numPixels()):
             j = random.randint(0, self._led_count-1)
