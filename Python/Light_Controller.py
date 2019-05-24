@@ -7,7 +7,6 @@ import threading
 from neopixel import Color
 from Pixel import Pixel
 
-global cur_mode = "Chase"
 
 class Lights(object):
     def __init__(self, pixel_count=30, pixel_pin=12, switch_pin=4):
@@ -22,6 +21,8 @@ class Lights(object):
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=200)
         self._mode = "Chase"
+        cur_mode = self._mode
+        global cur_mode
         self._light_thread = threading.Thread(name='light_show', target=self.execute_mode)
         self._light_thread.setDaemon(True)
 
