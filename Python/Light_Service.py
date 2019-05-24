@@ -35,7 +35,7 @@ class LightService(object):
                                 type=int,
                                 action="store",
                                 dest="switch_pin",
-                                default=2)
+                                default=4)
         # Pixel Configuration
         basic_pix = parser.add_argument_group('Neopixel Configuration')
         basic_pix.add_argument("-pp", "--pixelpin",
