@@ -44,7 +44,6 @@ class Lights(object):
             self._mode = "Chase"
         elif channel == "Automatic":
             self._log.warn("Automatic bump, continuing current mode", extra=self._logging_variables)
-        self.light_thread()
 
     def execute_mode(self):
         while True:
