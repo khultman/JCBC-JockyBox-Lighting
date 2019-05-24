@@ -83,8 +83,7 @@ class LightService(object):
         try:
             self._log.debug("Entering main loop", extra=self._logging_variables)
             while True:
-                self.lights.switch_mode("Automatic")
-                #self.lights.light_show()
+                self.lights.light_thread()
                 time.sleep(self._args.cycle)
         except KeyboardInterrupt:
             self.lights.stop()

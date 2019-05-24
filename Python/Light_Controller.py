@@ -3,6 +3,7 @@ import logging
 import math
 import random
 import RPi.GPIO as GPIO
+import threading
 from neopixel import Color
 from Pixel import Pixel
 
@@ -19,51 +20,51 @@ class Lights(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=200)
-        self._mode = "Initial"
+        self._mode = "Chase"
+        self._light_thread = threading.Thread(name='light_show', target=execute_mode)
+        self._light_thread.setDaemon(True)
 
     def switch_mode(self, channel):
         self._log.warn("Mode Button Pushed, channel {0}".format(channel), extra=self._logging_variables)
         c_mode = self._mode
-        if c_mode == "Initial":
-            self._log.warn("Initial State", extra=self._logging_variables)
-            self._mode = "Chase"
-            self.execute_mode()
-        elif c_mode == "Chase" and channel != "Automatic":
+        if c_mode == "Chase" and channel != "Automatic":
             self._log.warn("Transitioning from Chase to Rainbow", extra=self._logging_variables)
             self._mode = "Rainbow"
-            self.execute_mode()
         elif c_mode == "Rainbow" and channel != "Automatic":
             self._log.warn("Transitioning from Rainbow to Twinkle", extra=self._logging_variables)
             self._mode = "Twinkle"
-            self.execute_mode()
         elif c_mode == "Twinkle" and channel != "Automatic":
             self._log.warn("Transitioning from Twinkle to Solid", extra=self._logging_variables)
             self._mode = "Solid"
-            self.execute_mode()
         elif c_mode == "Solid" and channel != "Automatic":
             self._log.warn("Transitioning from Solid color to disabled", extra=self._logging_variables)
             self._mode = "Disabled"
-            self.execute_mode()
         elif c_mode == "Disabled" and channel != "Automatic":
             self._log.warn("Enabling Lightshow", extra=self._logging_variables)
             self._mode = "Chase"
-            self.execute_mode()
         elif channel == "Automatic":
             self._log.warn("Automatic bump, continuing current mode", extra=self._logging_variables)
-            self.execute_mode()
+        self.light_thread()
 
     def execute_mode(self):
-        self._log.warn("Executing mode {0}".format(self._mode), extra=self._logging_variables)
-        if self._mode == "Chase":
-            self.chase_selector()
-        elif self._mode == "Rainbow":
-            self.rainbow_selector()
-        elif self._mode == "Twinkle":
-            self.twinkle_selector()
-        elif self._mode == "Solid":
-            self.solid_color_selector()
-        elif self._mode == "Disabled":
-            self.stop()
+        while True:
+            self._log.warn("Executing mode {0}".format(self._mode), extra=self._logging_variables)
+            if self._mode == "Chase":
+                self.chase_selector()
+            elif self._mode == "Rainbow":
+                self.rainbow_selector()
+            elif self._mode == "Twinkle":
+                self.twinkle_selector()
+            elif self._mode == "Solid":
+                self.solid_color_selector()
+            elif self._mode == "Disabled":
+                self.stop()
+
+    def light_thread(self):
+        if self._light_thread.is_alive():
+            return
+        else
+            self._light_thread.start()
 
     def chase_selector(self):
         while True:
