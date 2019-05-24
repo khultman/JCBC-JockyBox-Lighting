@@ -21,7 +21,7 @@ class Lights(object):
         GPIO.setup(self._switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self._switch_pin, GPIO.RISING, callback=self.switch_mode, bouncetime=200)
         self._mode = "Chase"
-        self._light_thread = threading.Thread(name='light_show', target=self.execute_mode)
+        self._light_thread = light_thread.Thread(name='light_show', target=self.execute_mode)
         self._light_thread.setDaemon(True)
 
     def switch_mode(self, channel):
@@ -117,3 +117,18 @@ class Lights(object):
     def stop(self):
         self._pixel.clear()
 
+
+class light_thread(threading.Thread):
+    def __init__(self, name="light_thread"):
+        self._stopevent = threading.Event()
+        self.sleepperiod = 1.0
+        threading.Thread.__init__(self, name=name)
+
+    def run(selfself):
+        while not self._stopevent.isSet():
+            count += 1
+            self._stopevent.wait(self._sleepperiod)
+
+    def join(self, timeout=None):
+        self._stopevent.set()
+        threading.Thread.join(self, timeout)
