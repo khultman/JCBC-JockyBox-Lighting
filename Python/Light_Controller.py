@@ -61,7 +61,8 @@ class Lights(object):
 
     def light_thread(self):
         if self._light_thread.is_alive():
-            return
+            self._light_thread.join()
+            self._light_thread.start()
         else:
             self._light_thread.start()
 
