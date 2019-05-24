@@ -62,7 +62,7 @@ class Lights(object):
     def light_thread(self):
         if self._light_thread.is_alive():
             return
-        else
+        else:
             self._light_thread.start()
 
     def chase_selector(self):
