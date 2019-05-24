@@ -68,7 +68,7 @@ class Pixel(object):
             self._strip.show()
             time.sleep(wait_ms/1000.0)
 
-    def chase(self, color, wait_ms=75, iterations=10):
+    def chase(self, color, wait_ms=75, iterations=1):
         # Movie theater light style chaser animation.
         for j in range(iterations):
             for q in range(3):
